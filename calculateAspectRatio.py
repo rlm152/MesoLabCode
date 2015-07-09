@@ -104,11 +104,15 @@ def erode_and_dialate(imageArray):
     erodeAndDialate = erodeAndDialate.astype(imageArray.dtype)
     return erodeAndDialate
         
-def main():    
-    imageName = input("Please enter a filename (with quotes): ")
-    print("Thank you.")
-    date = datetime.date.today()
-    generateLabels = True
+def main(): 
+    imageName = "noisyImage"
+    print(imageName)
+    #imageName = input("Please enter a filename (with quotes): ")
+    #print("Thank you.")
+    #date = datetime.date.today()
+    date = datetime.date(2015, 7, 7)
+    print(date)
+    generateLabels = input("Labels? (True or False): ")
     #reads the image into an array of pixel values
     imageRead = read_image(imageName + ".png")
     #removes small artifacts from image
@@ -116,7 +120,7 @@ def main():
     #labels the connected components
     image, numLabel = label_components(cleanImage)    
     #opens a csv file to which the data points will be appended
-    with open("test.csv","a") as csvfile:
+    with open("smallFile.csv","a") as csvfile:
         writer = csv.writer(csvfile,delimiter=',')
         #generates column labels for csv file if desired
         if(generateLabels):
