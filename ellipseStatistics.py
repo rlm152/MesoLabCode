@@ -6,7 +6,7 @@ Created on Wed Jul 08 13:54:45 2015
 """
 
 import pandas 
-import datetime
+import numpy as np
 
 def read_csv_file(filename):
     """
@@ -17,16 +17,20 @@ def read_csv_file(filename):
 
 def slice_frame_by_attribute(frame, att):
     """
-    Slices the data frame by date and returns a starting and ending indicies for subframe 
+    Slices the data frame by attribute and returns a starting and ending indicies for subframe .
+    Will only find the first grouping of a particular attribute. 
+    
+    TODO: deal with the fact that there are multiple baslines locations!!!
     
     usage: bounds = slice_fram_by_attribute(frame, attributeAsAString)
     """
-   #print(frame)
+    
     startNotSet = True
     counter = 1
     startIndex = 0
     endIndex = 0
 
+    #
     for d in frame:
         if startNotSet and d == att:
 
@@ -42,11 +46,27 @@ def slice_frame_by_attribute(frame, att):
         endIndex = counter - 1
     return [startIndex, endIndex]
     
+def calculateAspectRatio(longAxisArray, shortAxisArray):
+    """
+    Returns a list of aspect ratio values.
+    
+    usage: ratios = calculateAspectRatio(longAxisArray, shortAxisArray)
+    """
+    if(len(longAxisArray) != len(shortAxisArray)):
+        print("ERROR: invalid inputs. Arrays must be equal length")
+        return
+    ratios = []
+    for i in longAxisArray:
+        ratios.append(longAxisArray[i] / shortAxisArray[i])
+    return ratios
+    
+
 def main():
     dendriteData = read_csv_file("BMGMC_dendrite_data_with_locations.csv")
 
     bounds = slice_frame_by_attribute(dendriteData.iloc[1:, 1], "4")
     print(bounds)
+    
     
     #print(dendriteData.iloc[bounds[0]:bounds[1], 2])
     #print(dendriteData.iloc[0:, 0:2])
