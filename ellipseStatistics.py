@@ -73,10 +73,38 @@ def plot_histogram_for_region(data, subRegions, region):
     return (aRFrame, aRFrame.mean(), aRFrame.std())
     
 
+def daily_std(data, day):
+    """
+    Calculates the standard deviation for a given day. 
     
+    usage: dailyStandardDev = (dataFrameOfData, dayAsString)
+    """
+    #bounds for a particular day
+    print(data.iloc[1:, 2])
+    dBounds = slice_frame_by_attribute(data.iloc[1:, 2], day)
+    print(dBounds)
+    #frame of all data for day
+    dFrame = data.iloc[dBounds[0]:dBounds[1], :]
+
+    #bounds within day for baseline region (13)
+    rBounds = slice_frame_by_attribute(dFrame.iloc[:, 1], "13")
+    print(rBounds)
+    #frame of all data for day and baseline region
+    dRFrame = dFrame.iloc[rBounds[0]: rBounds[1], :]
+    print(dRFrame)
+    '''
+    ratios =[]
+    for i in dRFrame.iloc[:, 1]:
+        ratio = calculate_aspect_ratio(dRFrame.iloc[:, 5], dRFrame.iloc[:, 6])
+        ratios.append(ratio)
+    ratioFrame = pandas.DataFrame(ratios)
+    return ratioFrame.std()
+    '''
 
 def main():
+    
     dendriteData = read_csv_file("BMGMC_dendrite_data_with_locations.csv")
+    '''
     frame1, mean1, std1 = plot_histogram_for_region(dendriteData, [3, 4, 5], 1)
     frame2, mean2, std2 = plot_histogram_for_region(dendriteData, [6, 7, 8, 9, 10], 2)      
     frame3, mean3, std3 = plot_histogram_for_region(dendriteData, [11, 12, 13, 14, 15], 3)
@@ -85,4 +113,6 @@ def main():
     
     stats = pandas.DataFrame([[mean1, std1], [mean2, std2], [mean3, std2], [mean4, std4], [mean5, std5]])
     print(stats)
+    '''
+    print(daily_std(dendriteData, "6/24/2015"))
     
