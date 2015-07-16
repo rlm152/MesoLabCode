@@ -80,25 +80,16 @@ def daily_std(data, day):
     usage: dailyStandardDev = (dataFrameOfData, dayAsString)
     """
     #bounds for a particular day
-    print(data.iloc[1:, 2])
     dBounds = slice_frame_by_attribute(data.iloc[1:, 2], day)
-    print(dBounds)
     #frame of all data for day
     dFrame = data.iloc[dBounds[0]:dBounds[1], :]
     #bounds within day for baseline region (13)
     rBounds = slice_frame_by_attribute(dFrame.iloc[:, 1], "13")
-    print(rBounds)
     #frame of all data for day and baseline region
     dRFrame = dFrame.iloc[rBounds[0] - 1 : rBounds[1] - 1 , :]
-    print(dRFrame)
-    '''
-    ratios =[]
-    for i in dRFrame.iloc[:, 1]:
-        ratio = calculate_aspect_ratio(dRFrame.iloc[:, 5], dRFrame.iloc[:, 6])
-        ratios.append(ratio)
-    ratioFrame = pandas.DataFrame(ratios)
-    return ratioFrame.std()
-    '''
+    ratios = calculate_aspect_ratio(dRFrame.iloc[:, 5], dRFrame.iloc[:, 6])
+    return ratios.std()
+    
 
 def main():
     
@@ -113,5 +104,9 @@ def main():
     stats = pandas.DataFrame([[mean1, std1], [mean2, std2], [mean3, std2], [mean4, std4], [mean5, std5]])
     print(stats)
     '''
+    print(daily_std(dendriteData, "6/24/2015"))
     print(daily_std(dendriteData, "7/1/2015"))
+    print(daily_std(dendriteData, "7/2/2015"))
+    print(daily_std(dendriteData, "7/6/2015"))
+    print(daily_std(dendriteData, "7/7/2015"))
     
