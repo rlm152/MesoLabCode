@@ -85,12 +85,11 @@ def daily_std(data, day):
     print(dBounds)
     #frame of all data for day
     dFrame = data.iloc[dBounds[0]:dBounds[1], :]
-
     #bounds within day for baseline region (13)
     rBounds = slice_frame_by_attribute(dFrame.iloc[:, 1], "13")
     print(rBounds)
     #frame of all data for day and baseline region
-    dRFrame = dFrame.iloc[rBounds[0]: rBounds[1], :]
+    dRFrame = dFrame.iloc[rBounds[0] - 1 : rBounds[1] - 1 , :]
     print(dRFrame)
     '''
     ratios =[]
@@ -114,5 +113,5 @@ def main():
     stats = pandas.DataFrame([[mean1, std1], [mean2, std2], [mean3, std2], [mean4, std4], [mean5, std5]])
     print(stats)
     '''
-    print(daily_std(dendriteData, "6/24/2015"))
+    print(daily_std(dendriteData, "7/1/2015"))
     
