@@ -74,7 +74,7 @@ def plot_histogram_for_region(data, subRegions, region):
     return (aRFrame, aRFrame.mean(), aRFrame.std())
     
 
-def daily_std(data, day):
+def daily_mean_and_std(data, day):
     """
     Calculates the standard deviation for a given day. 
     
@@ -89,7 +89,7 @@ def daily_std(data, day):
     #frame of all data for day and baseline region
     dRFrame = dFrame.iloc[rBounds[0] - 1 : rBounds[1] - 1 , :]
     ratios = calculate_aspect_ratio(dRFrame.iloc[:, 5], dRFrame.iloc[:, 6])
-    return ratios.std()
+    return ratios.mean(), ratios.std()
 
 def plot_daily_average(data):
     """
@@ -97,19 +97,15 @@ def plot_daily_average(data):
     
     usage: 
     """
-    days = ["6/24/2015", "7/1/2015", "7/2/2015", "7/6/2015", "7/7/2015"]
-    means = []
-    stds = []
+    days =pandas.DataFrame(["6/24/2015", "7/1/2015", "7/2/2015", "7/6/2015", "7/7/2015"])
+    means = pandas.DataFrame()
+    stds = pandas.DataFrame()
     for day in days:
-        #bounds for a particular day
-        dBounds = slice_frame_by_attribute(data.iloc[1:, 2], day)
-        #frame of all data for day
-        dFrame = data.iloc[dBounds[0]:dBounds[1], :]
-        ratios = calculate_aspect_ratio(dFrame.iloc[:, 5], dFrame.iloc[:, 6])
-        means.append(ratios.mean())
-        stds.append(ratios.std())
-    means = pandas.DataFrame(means)
-    ax = means.plot()
+        mean, std = daily_mean_and_std(data, day)
+        means.append(mean)
+        stds.append(std)
+    
+    ax = means.plot(kind = "scatter", title = "Daily Average Dendrite Aspect Ratio" )
 
 def main():
     
@@ -122,11 +118,5 @@ def main():
     frame5, mean5, std5 = plot_histogram_for_region(dendriteData, [21, 22, 23, 24, 25], 5)
     
     stats = pandas.DataFrame([[mean1, std1], [mean2, std2], [mean3, std2], [mean4, std4], [mean5, std5]])
-    print(stats)
-    
-    print(daily_std(dendriteData, "6/24/2015"))
-    print(daily_std(dendriteData, "7/1/2015"))
-    print(daily_std(dendriteData, "7/2/2015"))
-    print(daily_std(dendriteData, "7/6/2015"))
-    print(daily_std(dendriteData, "7/7/2015"))
+
     
