@@ -78,7 +78,6 @@ def plot_histogram_for_region(data, subRegions, region):
 def daily_mean_and_std(data, day):
     """
     Calculates the standard deviation for a given day. 
-    TODO: ISN'T WORKING FOR SOME REASON
     
     usage: daily_std = (dataFrameOfData, dayAsString)
     """
@@ -101,19 +100,23 @@ def plot_daily_average(data):
     """
     days = pandas.DataFrame(["6/24/2015", "7/1/2015", "7/2/2015", "7/6/2015", "7/7/2015"], columns = np.array(['a']))
     means = []
-    #stds = pandas.DataFrame()
+    stds = []
+    print(days.iterrows())
     for i, day in days.iterrows():
         print(day)
         mean, std = daily_mean_and_std(data, str(day))
-        print(mean)
         means.append(mean)
-        #stds.append(std)
+        stds.append(std)
     #print(days)
     #print(means)
     dm = pandas.DataFrame(means)
+    print(dm)
     dm.columns = np.array(['b'])
+    ds = pandas.DataFrame(stds)
+    ds.columns = np.array(['c'])
+    print(ds)
     #print(dm)
-    print(pandas.concat([days, dm], axis = 1, join_axes = [days.index]))
+    print(pandas.concat([days, dm, ds], axis = 1, join_axes = [days.index]))
    # print(stds)
    # dailyData = pandas.concat(frames)
    # print(dailyData)
@@ -123,7 +126,7 @@ def main():
     
     dendriteData = read_csv_file("BMGMC_dendrite_data_with_locations.csv")
     plot_daily_average(dendriteData)
-    
+    '''
     frame1, mean1, std1 = plot_histogram_for_region(dendriteData, [3, 4, 5], 1)
     frame2, mean2, std2 = plot_histogram_for_region(dendriteData, [6, 7, 8, 9, 10], 2)      
     frame3, mean3, std3 = plot_histogram_for_region(dendriteData, [11, 12, 13, 14, 15], 3)
@@ -132,4 +135,5 @@ def main():
     
     stats = pandas.DataFrame([[mean1, std1], [mean2, std2], [mean3, std2], [mean4, std4], [mean5, std5]])
     print(stats)
-    
+    '''
+    print(daily_mean_and_std(dendriteData, "7/1/2015"))

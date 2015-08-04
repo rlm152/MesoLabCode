@@ -85,8 +85,8 @@ def generate_column_labels():
     labels = [];
     labels.append("file_name")
     labels.append("date")
-    labels.append("x_coordiate")
-    labels.append("y_coordiate")
+    labels.append("x_coordinate")
+    labels.append("y_coordinate")
     labels.append("long_axis")
     labels.append("short_axis")
     labels.append("angle")
