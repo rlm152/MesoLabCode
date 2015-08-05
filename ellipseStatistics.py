@@ -20,8 +20,8 @@ def plot_histogram_for_region(data, subRegions, region):
         temp = data[data['location'] ==  i]
         subFrame = subFrame.append(temp)
     ratios = subFrame['aspect_ratio']
-    ratios_frame = pandas.DataFrame(ratios)  
-    ax = ratios_frame.plot( kind = 'hist', title = ('Dendrite Aspect Ratios for Region ' + str(region)), bins = 20 
+    ratiosFrame = pandas.DataFrame(ratios)  
+    ax = ratiosFrame.plot( kind = 'hist', title = ('Dendrite Aspect Ratios for Region ' + str(region)), bins = 20 
                       , xticks = [x for x in xrange(1,11)], yticks = [y for y in xrange(1,18)], legend = False)
     ax.set_xlabel('Aspect Ratio')
     return (ratios, ratios.mean(), ratios.std())
@@ -32,8 +32,22 @@ def plot_daily_average(data):
     TODO:FIX NEW SLICING
     usage: plot_daily_average(dendriteData)
     '''
-    
-    dates = data['date']
+    allData = []
+    dates = sorted(list(set(data['date'])))
+    print(dates)
+    for date in dates: 
+        dateFrame = data[data['date'] == date]
+        base = dateFrame[dateFrame['location'] == 13]
+        mean = base['aspect_ratio'].mean()
+        std = base['aspect_ratio'].std()
+        allData.append([date, mean, std])
+        
+    allFrame = pandas.DataFrame(allData, columns = ['date', 'mean', 'std_dev'])
+    ax = allFrame.plot(kind = 'scatter', x = 'date', y = 'mean', title = 'Daily Baseline Average')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Average')
+
+    '''
     #days = pandas.DataFrame(['6/24/2015', '7/1/2015', '7/2/2015', '7/6/2015', '7/7/2015'], columns = np.array(['date']))
     means = []
     stds = []
@@ -56,18 +70,26 @@ def plot_daily_average(data):
    # dailyData = pandas.concat(frames)
    # print(dailyData)
     #ax = means.plot(kind = "scatter", title = "Daily Average Dendrite Aspect Ratio" )
+'''
 
+def plot_histograms(data):
+    '''
+    Plots the histrogram for each region and returns the stats (mean and std) for each region
+    
+    usage: stats = plot_histograms(dendriteData)
+    '''
+    frame1, mean1, std1 = plot_histogram_for_region(data, [3, 4, 5], 1)
+    frame2, mean2, std2 = plot_histogram_for_region(data, [6, 7, 8, 9, 10], 2)      
+    frame3, mean3, std3 = plot_histogram_for_region(data, [11, 12, 13, 14, 15], 3)
+    frame4, mean4, std4 = plot_histogram_for_region(data, [16, 17, 18, 19, 20], 4)
+    frame5, mean5, std5 = plot_histogram_for_region(data, [21, 22, 23, 24, 25], 5)
+    
+    stats = pandas.DataFrame([[1, mean1, std1], [2, mean2, std2], [3, mean3, std2], [4, mean4, std4], [5, mean5, std5]], columns = ['region', 'mean', 'std'])
+    return stats
+    
 def main():
     d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
     #adds new column of aspect ratios to data frame
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']   
-  
-    frame1, mean1, std1 = plot_histogram_for_region(d, [3, 4, 5], 1)
-    frame2, mean2, std2 = plot_histogram_for_region(d, [6, 7, 8, 9, 10], 2)      
-    frame3, mean3, std3 = plot_histogram_for_region(d, [11, 12, 13, 14, 15], 3)
-    frame4, mean4, std4 = plot_histogram_for_region(d, [16, 17, 18, 19, 20], 4)
-    frame5, mean5, std5 = plot_histogram_for_region(d, [21, 22, 23, 24, 25], 5)
-    
-    stats = pandas.DataFrame([[mean1, std1], [mean2, std2], [mean3, std2], [mean4, std4], [mean5, std5]], columns = ['mean', 'std'])
-    print(stats)
+    plot_daily_average(d)
     
