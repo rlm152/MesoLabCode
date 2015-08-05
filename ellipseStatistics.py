@@ -47,11 +47,9 @@ def plot_daily_average(data):
         tempF.columns = [date]
         frames.append(tempF)
     allData = pandas.concat(frames, axis = 1)
-    print(allData)
-   # allFrame = pandas.DataFrame(allData, columns = ['date', 'mean', 'std_dev'])
-   # ax = allFrame.plot(kind = 'box', x = 'date', y = 'mean', title = 'Daily Baseline Average')
-   # ax.set_xlabel('Date')
-   # ax.set_ylabel('Average')
+    ax = allData.plot(kind = 'box', title = 'Daily Baseline Average')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Aspect Ratio')
 
     
 
