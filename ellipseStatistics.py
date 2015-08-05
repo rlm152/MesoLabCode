@@ -32,45 +32,28 @@ def plot_daily_average(data):
     TODO:FIX NEW SLICING
     usage: plot_daily_average(dendriteData)
     '''
-    allData = []
+    frames = []
     dates = sorted(list(set(data['date'])))
-    print(dates)
     for date in dates: 
+        #slice frame by date
         dateFrame = data[data['date'] == date]
+        #slice date frame by baseline location
         base = dateFrame[dateFrame['location'] == 13]
-        mean = base['aspect_ratio'].mean()
-        std = base['aspect_ratio'].std()
-        allData.append([date, mean, std])
-        
-    allFrame = pandas.DataFrame(allData, columns = ['date', 'mean', 'std_dev'])
-    ax = allFrame.plot(kind = 'scatter', x = 'date', y = 'mean', title = 'Daily Baseline Average')
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Average')
+        length = base.shape[0]
+        #aspect ratio of base
+        temp = base['aspect_ratio']
+        tempF = pandas.DataFrame(temp)
+        tempF.set_index(np.arange(length), inplace = True)
+        tempF.columns = [date]
+        frames.append(tempF)
+    allData = pandas.concat(frames, axis = 1)
+    print(allData)
+   # allFrame = pandas.DataFrame(allData, columns = ['date', 'mean', 'std_dev'])
+   # ax = allFrame.plot(kind = 'box', x = 'date', y = 'mean', title = 'Daily Baseline Average')
+   # ax.set_xlabel('Date')
+   # ax.set_ylabel('Average')
 
-    '''
-    #days = pandas.DataFrame(['6/24/2015', '7/1/2015', '7/2/2015', '7/6/2015', '7/7/2015'], columns = np.array(['date']))
-    means = []
-    stds = []
-    for i, day in days.iterrows():
-        print(day)
-        mean, std = daily_mean_and_std(data, str(day))
-        means.append(mean)
-        stds.append(std)
-    #print(days)
-    #print(means)
-    dm = pandas.DataFrame(means)
-    print(dm)
-    dm.columns = np.array(['b'])
-    ds = pandas.DataFrame(stds)
-    ds.columns = np.array(['c'])
-    print(ds)
-    #print(dm)
-    print(pandas.concat([days, dm, ds], axis = 1, join_axes = [days.index]))
-   # print(stds)
-   # dailyData = pandas.concat(frames)
-   # print(dailyData)
-    #ax = means.plot(kind = "scatter", title = "Daily Average Dendrite Aspect Ratio" )
-'''
+    
 
 def plot_histograms(data):
     '''
