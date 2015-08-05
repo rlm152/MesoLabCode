@@ -49,7 +49,6 @@ def plot_daily_average(data):
     ax.set_xlabel('Date')
     ax.set_ylabel('Average')
     dates = [' '] + dates
-    print(dates)
     ax.set_xticklabels(dates)
     
 def plot_daily_distribution(data):
@@ -83,19 +82,32 @@ def plot_histograms(data):
     
     usage: stats = plot_histograms(dendriteData)
     '''
-    frame1, mean1, std1 = plot_histogram_for_region(data, [3, 4, 5], 1)
-    frame2, mean2, std2 = plot_histogram_for_region(data, [6, 7, 8, 9, 10], 2)      
+    frame5, mean5, std5 = plot_histogram_for_region(data, [3, 4, 5], 5)
+    frame4, mean4, std4 = plot_histogram_for_region(data, [6, 7, 8, 9, 10], 4)      
     frame3, mean3, std3 = plot_histogram_for_region(data, [11, 12, 13, 14, 15], 3)
-    frame4, mean4, std4 = plot_histogram_for_region(data, [16, 17, 18, 19, 20], 4)
-    frame5, mean5, std5 = plot_histogram_for_region(data, [21, 22, 23, 24, 25], 5)
-    
+    frame2, mean2, std2 = plot_histogram_for_region(data, [16, 17, 18, 19, 20], 2)
+    frame1, mean1, std1 = plot_histogram_for_region(data, [21, 22, 23, 24, 25], 1)
     stats = pandas.DataFrame([[1, mean1, std1], [2, mean2, std2], [3, mean3, std2], [4, mean4, std4], [5, mean5, std5]], columns = ['region', 'mean', 'std'])
+    
     return stats
+    
+def plot_region_average(stats):
+    '''
+    Plots the average and standard deviation (as error bars) for each strain region of the sample. 
+    
+    '''
+    ax = stats.plot(kind = 'scatter', title = 'Region Aspect Ratio Average', x = 'region', y = 'mean', yerr = 'std')    
+    ax.set_xlabel('Region')
+    ax.set_ylabel('Average Aspect Ratio') 
+    labels = ['undeformed', '1', '2', '3', '4', '5', 'deformed']
+    ax.set_xticklabels(labels)
     
 def main():
     d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
     #adds new column of aspect ratios to data frame
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']   
-    plot_daily_average(d)
+    stats = plot_histograms(d)
+    plot_region_average(stats)
+    
 
     
