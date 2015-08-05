@@ -29,9 +29,35 @@ def plot_histogram_for_region(data, subRegions, region):
 def plot_daily_average(data):
     '''
     Plots a graph of the average dendrite aspect ratio per day with error bars of the standard deviation.
-    TODO:FIX NEW SLICING
+
     usage: plot_daily_average(dendriteData)
     '''
+    index = 1
+    dates = data['date']
+    allData = []
+    dates = sorted(list(set(data['date'])))
+    print(type(dates[0]))
+    for date in dates: 
+        dateFrame = data[data['date'] == date]
+        base = dateFrame[dateFrame['location'] == 13]
+        mean = base['aspect_ratio'].mean()
+        std = base['aspect_ratio'].std()
+        allData.append([index, date, mean, std]) 
+        index = index + 1
+    allFrame = pandas.DataFrame(allData, columns = ['index', 'date', 'mean', 'std_dev'])
+    ax = allFrame.plot(kind = 'scatter',x = 'index', y = 'mean', yerr = 'std_dev', title = 'Daily Baseline Average')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Average')
+    dates = [' '] + dates
+    print(dates)
+    ax.set_xticklabels(dates)
+    
+def plot_daily_distribution(data):
+    '''
+    Plots a box and whisker plot of the daily baseline aspect ratios.
+    
+    usage: plot_daily_distributaion(dendriteData)
+    '''    
     frames = []
     dates = sorted(list(set(data['date'])))
     for date in dates: 
@@ -47,11 +73,9 @@ def plot_daily_average(data):
         tempF.columns = [date]
         frames.append(tempF)
     allData = pandas.concat(frames, axis = 1)
-    ax = allData.plot(kind = 'box', title = 'Daily Baseline Average')
+    ax = allData.plot(kind = 'box', title = 'Daily Distribution')
     ax.set_xlabel('Date')
     ax.set_ylabel('Aspect Ratio')
-
-    
 
 def plot_histograms(data):
     '''
@@ -73,4 +97,5 @@ def main():
     #adds new column of aspect ratios to data frame
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']   
     plot_daily_average(d)
+
     
