@@ -93,21 +93,34 @@ def plot_histograms(data):
     
 def plot_region_average(stats):
     '''
-    Plots the average and standard deviation (as error bars) for each strain region of the sample. 
+    Plots the average and standard deviation (as error bars) for each strain region of the sample. Pass in a data
+    frame with the columns region, mean, and std.
     
+    usage: plot_region_average(stats)
     '''
     ax = stats.plot(kind = 'scatter', title = 'Region Aspect Ratio Average', x = 'region', y = 'mean', yerr = 'std')    
     ax.set_xlabel('Region')
     ax.set_ylabel('Average Aspect Ratio') 
     labels = ['undeformed', '1', '2', '3', '4', '5', 'deformed']
     ax.set_xticklabels(labels)
+
+def plot_strain_average(stats):
+    '''
+    Plots the average aspect ratio vs. strain. 
+    
+    usage: plot_strain_average(stats)
+    ''' 
+    strains = [.2657, .3365, .4129, .5304, .7518]
+    stats['strains'] = pandas.Series(strains, index = stats.index)
+    ax = stats.plot(kind = 'scatter', title = 'Average Aspect Ratio vs. Strain', x = 'strains', y = 'mean', yerr = 'std')    
+    ax.set_xlabel('Strain')
+    ax.set_ylabel('Average Aspect Ratio')
     
 def main():
     d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
     #adds new column of aspect ratios to data frame
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']   
     stats = plot_histograms(d)
-    plot_region_average(stats)
-    
+    plot_strain_average(stats)    
 
     
