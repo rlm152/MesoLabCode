@@ -84,6 +84,7 @@ def generate_column_labels():
     '''
     labels = [];
     labels.append("file_name")
+    labels.append("location")
     labels.append("date")
     labels.append("x_coordinate")
     labels.append("y_coordinate")
@@ -113,6 +114,7 @@ def main():
     date = datetime.date(2015, 7, 7)
     print(date)
     generateLabels = input("Labels? (True or False): ")
+    location = input("region: ")
     #reads the image into an array of pixel values
     imageRead = read_image(imageName + ".png")
     #removes small artifacts from image
@@ -131,6 +133,7 @@ def main():
             xc, yc, longAxis, shortAxis, angle = fit_ellipse(whiteOutArray)
             info = [];
             info.append(imageName)
+            info.append(location)
             info.append(date)
             info.append(xc)
             info.append(yc)

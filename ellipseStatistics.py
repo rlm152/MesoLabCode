@@ -7,6 +7,8 @@ Created on Wed Jul 08 13:54:45 2015
 
 import pandas 
 import numpy as np
+import matplotlib.pyplot as plt
+import math
 
 def plot_histogram_for_region(data, subRegions, region):
     '''
@@ -47,7 +49,7 @@ def plot_daily_average(data):
     allFrame = pandas.DataFrame(allData, columns = ['index', 'date', 'mean', 'std_dev'])
     ax = allFrame.plot(kind = 'scatter',x = 'index', y = 'mean', yerr = 'std_dev', title = 'Daily Baseline Average')
     ax.set_xlabel('Date')
-    ax.set_ylabel('Average')
+    ax.set_ylabel('Average Aspect Ratio')
     dates = [' '] + dates
     ax.set_xticklabels(dates)
     
@@ -88,6 +90,8 @@ def plot_histograms(data):
     frame2, mean2, std2 = plot_histogram_for_region(data, [16, 17, 18, 19, 20], 2)
     frame1, mean1, std1 = plot_histogram_for_region(data, [21, 22, 23, 24, 25], 1)
     stats = pandas.DataFrame([[1, mean1, std1], [2, mean2, std2], [3, mean3, std2], [4, mean4, std4], [5, mean5, std5]], columns = ['region', 'mean', 'std'])
+
+    plt.close('all')    
     
     return stats
     
@@ -104,23 +108,37 @@ def plot_region_average(stats):
     labels = ['undeformed', '1', '2', '3', '4', '5', 'deformed']
     ax.set_xticklabels(labels)
 
-def plot_strain_average(stats):
+def plot_strain_average(stats, strains):
     '''
     Plots the average aspect ratio vs. strain. 
     
-    usage: plot_strain_average(stats)
+    usage: plot_strain_average(stats, strains)
     ''' 
-    strains = [.2657, .3365, .4129, .5304, .7518]
+    
     stats['strains'] = pandas.Series(strains, index = stats.index)
     ax = stats.plot(kind = 'scatter', title = 'Average Aspect Ratio vs. Strain', x = 'strains', y = 'mean', yerr = 'std')    
     ax.set_xlabel('Strain')
     ax.set_ylabel('Average Aspect Ratio')
     
+def plot_dendrite_vs_bulk_strain(stats):
+    '''
+    Calculates the strain of a region of dendrites given a dataframe of aspect ratio values. Strains are appended as new column in dataframe.
+    TODO: add error bars?
+    usage: plot_dendrite_vs_bulk_strain(stats)
+    '''
+    stats['dendrite_strain'] = (stats['mean'] ** .5) - 1
+    print(stats)
+    ax = stats.plot(kind = 'scatter', title = 'Dendrite Strain vs. Bulk Strain', x = 'bulk_strain', y = 'dendrite_strain')
+    ax.set_xlabel('Bulk Strain')
+    ax.set_ylabel('Dendrite Strain')
+    
 def main():
     d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
     #adds new column of aspect ratios to data frame
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']   
+    strains = [.4608, .5597, .6553, .7795, .9383]
     stats = plot_histograms(d)
-    plot_strain_average(stats)    
-
+    stats['bulk_strain'] = [.4608, .5597, .6553, .7795, .9383]
+    plot_dendrite_vs_bulk_strain(stats)
+   
     
