@@ -8,7 +8,6 @@ Created on Wed Jul 08 13:54:45 2015
 import pandas 
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 
 def plot_histogram_for_region(data, subRegions, region):
     '''
@@ -118,7 +117,14 @@ def plot_strain_average(stats, strains):
     stats['strains'] = pandas.Series(strains, index = stats.index)
     ax = stats.plot(kind = 'scatter', title = 'Average Aspect Ratio vs. Strain', x = 'strains', y = 'mean', yerr = 'std')    
     ax.set_xlabel('Strain')
+    ax.set_xlim([.4, 1])
     ax.set_ylabel('Average Aspect Ratio')
+    ax.set_ylim([1, 5.5])
+    fit = np.polyfit(stats['strains'], stats['mean'], 2)
+    x = np.linspace(.4, 1, 20) 
+    y = fit[2] + (fit[1] * x) + (fit[0] * (x**2)) 
+    ax.plot(x, y, 'r-')
+    ax.legend([' y = {0}x^2 + {1}x + {2}'.format(str(fit[0]), str(fit[1]), str(fit[2]))])
     
 def plot_dendrite_vs_bulk_strain(stats):
     '''
@@ -127,13 +133,23 @@ def plot_dendrite_vs_bulk_strain(stats):
     usage: plot_dendrite_vs_bulk_strain(stats)
     '''
     stats['dendrite_strain'] = (stats['mean'] ** .5) - 1
+    stats['den_min'] = ((stats['mean'] - stats['std']) ** .5) -1
+    stats['den_max'] = ((stats['mean'] + stats['std']) ** .5) -1
+    print(stats)
     ax = stats.plot(kind = 'scatter', title = 'Dendrite Strain vs. Bulk Strain', x = 'bulk_strain', y = 'dendrite_strain')
     ax.set_xlabel('Bulk Strain')
     ax.set_xlim([.4, 1])
     ax.set_ylabel('Dendrite Strain')
-    ax.set_ylim([.4, 1])
+    ax.set_ylim([.1, 1])
     ax.plot([0, 1], [0, 1], 'r-') 
-    ax.legend(['strain', 'reference line'], 2)
+    
+
+    bulk = list(stats['bulk_strain'])
+    mini = list(stats['den_min'])
+    maxi = list(stats['den_max'])
+    ax.plot(bulk, mini, 'go')
+    ax.plot(bulk, maxi, 'mo')
+    ax.legend(['reference', 'min', 'max', 'strain'], 2)
     
 def main():
     d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
@@ -141,6 +157,7 @@ def main():
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']   
     strains = [.4608, .5597, .6553, .7795, .9383]
     stats = plot_histograms(d)
+    plot_strain_average(stats, strains)
     stats['bulk_strain'] = [.4608, .5597, .6553, .7795, .9383]
     plot_dendrite_vs_bulk_strain(stats)
    
