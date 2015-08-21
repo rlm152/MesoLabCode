@@ -124,7 +124,7 @@ def plot_strain_average(stats, strains):
     x = np.linspace(.4, 1, 20) 
     y = fit[2] + (fit[1] * x) + (fit[0] * (x**2)) 
     ax.plot(x, y, 'r-')
-    ax.legend([' y = {0}x^2 + {1}x + {2}'.format(str(fit[0]), str(fit[1]), str(fit[2]))])
+    ax.legend(['raw',' y = {0}x^2 + {1}x + {2}'.format("{:.2f}".format(fit[0]), "{:.2f}".format(fit[1]), "{:.2f}".format(fit[2]))], 2)
     
 def plot_dendrite_vs_bulk_strain(stats):
     '''
@@ -143,13 +143,20 @@ def plot_dendrite_vs_bulk_strain(stats):
     ax.set_ylim([.1, 1])
     ax.plot([0, 1], [0, 1], 'r-') 
     
+    x = np.linspace(.4, 1, 20) 
+    minFit = np.polyfit(stats['bulk_strain'], stats['den_min'], 1)
+    regFit = np.polyfit(stats['bulk_strain'], stats['dendrite_strain'], 1)
+    maxFit = np.polyfit(stats['bulk_strain'], stats['den_max'], 1)
+    minY = minFit[0] * x + minFit[1]
+    regY = regFit[0] * x + regFit[1]
+    maxY = maxFit[0] * x + maxFit[1]
+    ax.plot(x, minY, 'g-')
+    ax.plot(x, regY, 'b-')
+    ax.plot(x, maxY, 'm-')
 
-    bulk = list(stats['bulk_strain'])
-    mini = list(stats['den_min'])
-    maxi = list(stats['den_max'])
-    ax.plot(bulk, mini, 'go')
-    ax.plot(bulk, maxi, 'mo')
-    ax.legend(['reference', 'min', 'max', 'strain'], 2)
+    ax.plot(stats['bulk_strain'], stats['den_min'], 'go')
+    ax.plot(stats['bulk_strain'], stats['den_max'], 'mo')
+    ax.legend(['reference', 'min', 'strain', 'max'], 2)
     
 def main():
     d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
@@ -157,7 +164,7 @@ def main():
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']   
     strains = [.4608, .5597, .6553, .7795, .9383]
     stats = plot_histograms(d)
-    plot_strain_average(stats, strains)
+    #plot_strain_average(stats, strains)
     stats['bulk_strain'] = [.4608, .5597, .6553, .7795, .9383]
     plot_dendrite_vs_bulk_strain(stats)
    
