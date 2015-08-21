@@ -127,10 +127,13 @@ def plot_dendrite_vs_bulk_strain(stats):
     usage: plot_dendrite_vs_bulk_strain(stats)
     '''
     stats['dendrite_strain'] = (stats['mean'] ** .5) - 1
-    print(stats)
     ax = stats.plot(kind = 'scatter', title = 'Dendrite Strain vs. Bulk Strain', x = 'bulk_strain', y = 'dendrite_strain')
     ax.set_xlabel('Bulk Strain')
+    ax.set_xlim([.4, 1])
     ax.set_ylabel('Dendrite Strain')
+    ax.set_ylim([.4, 1])
+    ax.plot([0, 1], [0, 1], 'r-') 
+    ax.legend(['strain', 'reference line'], 2)
     
 def main():
     d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
