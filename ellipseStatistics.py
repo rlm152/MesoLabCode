@@ -23,7 +23,7 @@ def plot_histogram_for_region(data, subRegions, region):
     ratios = subFrame['aspect_ratio']
     ratiosFrame = pandas.DataFrame(ratios)  
     ax = ratiosFrame.plot( kind = 'hist', title = ('Dendrite Aspect Ratios for Region ' + str(region)), bins = 20 
-                      , xticks = [x for x in xrange(1,11)], yticks = [y for y in xrange(1,18)], legend = False)
+                      , xticks = [x for x in xrange(1,11)], yticks = [y for y in xrange(1,25)], legend = False)
     ax.set_xlabel('Aspect Ratio')
     return (ratios, ratios.mean(), ratios.std())
     
@@ -83,12 +83,12 @@ def plot_histograms(data):
     
     usage: stats = plot_histograms(dendriteData)
     '''
-    frame5, mean5, std5 = plot_histogram_for_region(data, [3, 4, 5], 5)
-    frame4, mean4, std4 = plot_histogram_for_region(data, [6, 7, 8, 9, 10], 4)      
-    frame3, mean3, std3 = plot_histogram_for_region(data, [11, 12, 13, 14, 15], 3)
+    frame5, mean5, std5 = plot_histogram_for_region(data, [2, 3, 4, 5, 6], 3)
+    frame4, mean4, std4 = plot_histogram_for_region(data, [7, 8, 9, 10, 11, 12, 13], 2)      
+    frame3, mean3, std3 = plot_histogram_for_region(data, [14, 15, 16, 17, 18, 19, 20], 1)
     frame2, mean2, std2 = plot_histogram_for_region(data, [16, 17, 18, 19, 20], 2)
     frame1, mean1, std1 = plot_histogram_for_region(data, [21, 22, 23, 24, 25], 1)
-    stats = pandas.DataFrame([[1, mean1, std1], [2, mean2, std2], [3, mean3, std2], [4, mean4, std4], [5, mean5, std5]], columns = ['region', 'mean', 'std'])
+    stats = pandas.DataFrame([[1, mean1, std1], [2, mean2, std2], [3, mean3, std3], [4, mean4, std4], [5, mean5, std5]], columns = ['region', 'mean', 'std'])
 
     plt.close('all')    
     
@@ -104,7 +104,7 @@ def plot_region_average(stats):
     ax = stats.plot(kind = 'scatter', title = 'Region Aspect Ratio Average', x = 'region', y = 'mean', yerr = 'std')    
     ax.set_xlabel('Region')
     ax.set_ylabel('Average Aspect Ratio') 
-    labels = ['undeformed', '1', '2', '3', '4', '5', 'deformed']
+    labels = ['undeformed', '1',' ',  '2',' ', '3', 'deformed']
     ax.set_xticklabels(labels)
 
 def plot_strain_average(stats, strains):
@@ -117,11 +117,11 @@ def plot_strain_average(stats, strains):
     stats['strains'] = pandas.Series(strains, index = stats.index)
     ax = stats.plot(kind = 'scatter', title = 'Average Aspect Ratio vs. Strain', x = 'strains', y = 'mean', yerr = 'std')    
     ax.set_xlabel('Strain')
-    ax.set_xlim([.4, 1])
+    ax.set_xlim([0, 1])
     ax.set_ylabel('Average Aspect Ratio')
     ax.set_ylim([1, 5.5])
     fit = np.polyfit(stats['strains'], stats['mean'], 2)
-    x = np.linspace(.4, 1, 20) 
+    x = np.linspace(0, 1, 20) 
     y = fit[2] + (fit[1] * x) + (fit[0] * (x**2)) 
     ax.plot(x, y, 'r-')
     ax.legend(['raw',' y = {0}x^2 + {1}x + {2}'.format("{:.2f}".format(fit[0]), "{:.2f}".format(fit[1]), "{:.2f}".format(fit[2]))], 2)
@@ -138,12 +138,12 @@ def plot_dendrite_vs_bulk_strain(stats):
     print(stats)
     ax = stats.plot(kind = 'scatter', title = 'Dendrite Strain vs. Bulk Strain', x = 'bulk_strain', y = 'dendrite_strain')
     ax.set_xlabel('Bulk Strain')
-    ax.set_xlim([.4, 1])
+    ax.set_xlim([0, 1])
     ax.set_ylabel('Dendrite Strain')
-    ax.set_ylim([.1, 1])
+    ax.set_ylim([0, 1.3])
     ax.plot([0, 1], [0, 1], 'r-') 
     
-    x = np.linspace(.4, 1, 20) 
+    x = np.linspace(0, 1, 20) 
     minFit = np.polyfit(stats['bulk_strain'], stats['den_min'], 1)
     regFit = np.polyfit(stats['bulk_strain'], stats['dendrite_strain'], 1)
     maxFit = np.polyfit(stats['bulk_strain'], stats['den_max'], 1)
@@ -161,11 +161,18 @@ def plot_dendrite_vs_bulk_strain(stats):
 def main():
     d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
     #adds new column of aspect ratios to data frame
-    d['aspect_ratio'] = d['long_axis'] / d['short_axis']   
-    strains = [.4608, .5597, .6553, .7795, .9383]
+    d['aspect_ratio'] = d['long_axis'] / d['short_axis']  
+    #print(d.mean())
+    #print(d.std())
+    
+    #hot_strains = [.4608, .5597, .6553, .7795, .9383]
+    #RT_strains = [.1726, .4692, .8182]
     stats = plot_histograms(d)
-    #plot_strain_average(stats, strains)
-    stats['bulk_strain'] = [.4608, .5597, .6553, .7795, .9383]
-    plot_dendrite_vs_bulk_strain(stats)
+    print(stats)
+    #plot_region_average(stats)
+    #add bulk strain column to stats frame
+    #stats['bulk_strain'] = [.1726, .4692, .8182]
+    #plot_strain_average(stats, RT_strains)
+    #plot_dendrite_vs_bulk_strain(stats)
    
     

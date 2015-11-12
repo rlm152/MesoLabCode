@@ -106,7 +106,7 @@ def erode_and_dialate(imageArray):
     return erodeAndDialate
         
 def main(): 
-    imageName = "noisyImage"
+    imageName = "Undeformed_033_layer4"
     print(imageName)
     #imageName = input("Please enter a filename (with quotes): ")
     #print("Thank you.")
@@ -122,7 +122,7 @@ def main():
     #labels the connected components
     image, numLabel = label_components(cleanImage)    
     #opens a csv file to which the data points will be appended
-    with open("smallFile.csv","a") as csvfile:
+    with open("Undeformed.csv","a") as csvfile:
         writer = csv.writer(csvfile,delimiter=',')
         #generates column labels for csv file if desired
         if(generateLabels):
