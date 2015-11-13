@@ -83,12 +83,12 @@ def plot_histograms(data):
     
     usage: stats = plot_histograms(dendriteData)
     '''
-    frame5, mean5, std5 = plot_histogram_for_region(data, [2, 3, 4, 5, 6], 3)
-    frame4, mean4, std4 = plot_histogram_for_region(data, [7, 8, 9, 10, 11, 12, 13], 2)      
-    frame3, mean3, std3 = plot_histogram_for_region(data, [14, 15, 16, 17, 18, 19, 20], 1)
-    frame2, mean2, std2 = plot_histogram_for_region(data, [16, 17, 18, 19, 20], 2)
-    frame1, mean1, std1 = plot_histogram_for_region(data, [21, 22, 23, 24, 25], 1)
-    stats = pandas.DataFrame([[1, mean1, std1], [2, mean2, std2], [3, mean3, std3], [4, mean4, std4], [5, mean5, std5]], columns = ['region', 'mean', 'std'])
+    frame3, mean3, std3 = plot_histogram_for_region(data, [2, 3, 4, 5, 6], 3)
+    frame2, mean2, std2 = plot_histogram_for_region(data, [7, 8, 9, 10, 11, 12, 13], 2)      
+    frame1, mean1, std1 = plot_histogram_for_region(data, [14, 15, 16, 17, 18, 19, 20], 1)
+    #frame2, mean2, std2 = plot_histogram_for_region(data, [16, 17, 18, 19, 20], 2)
+    #frame1, mean1, std1 = plot_histogram_for_region(data, [21, 22, 23, 24, 25], 1)
+    stats = pandas.DataFrame([[1, mean1, std1], [2, mean2, std2], [3, mean3, std3]], columns = ['region', 'mean', 'std'])
 
     plt.close('all')    
     
@@ -159,7 +159,7 @@ def plot_dendrite_vs_bulk_strain(stats):
     ax.legend(['reference', 'min', 'strain', 'max'], 2)
     
 def main():
-    d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ",", header = 0)
+    d = pandas.read_csv('RTmeasurements.csv', sep = ",", header = 0)
     #adds new column of aspect ratios to data frame
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']  
     #print(d.mean())
