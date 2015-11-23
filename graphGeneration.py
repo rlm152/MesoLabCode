@@ -48,13 +48,14 @@ def den_vs_bulk_strain(hot):
     model_no_intercept = pandas.ols(y = hot['den_strain'], x = hot['bulk_strain'], intercept = False)
     print(model_no_intercept)
     hot['fit'] = model_no_intercept.y_fitted
-    ax.plot(hot['bulk_strain'], hot['fit'], 'b-')
+    #ax.plot(hot['bulk_strain'], hot['fit'], 'k-')
     
     minFit = np.polyfit(hot['bulk_strain'], hot['den_min'], 1)
     regFit = np.polyfit(hot['bulk_strain'], hot['den_strain'], 1)
     maxFit = np.polyfit(hot['bulk_strain'], hot['den_max'], 1)
     minY = minFit[0] * x + minFit[1]
-    regY = regFit[0] * x + regFit[1]
+    #regY = regFit[0] * x + regFit[1]
+    regY = 0.5751 * x;
     maxY = maxFit[0] * x + maxFit[1]
     ax.plot(x, regY, 'k-')
     ax.plot(x, maxY, 'k--')
@@ -62,7 +63,7 @@ def den_vs_bulk_strain(hot):
     #plots Jesi's strain data on the linear regression of my data
     ax.plot([0.20, 0.31], [regFit[0] * 0.20 + regFit[1], regFit[0] * 0.31 + regFit[1]], 'w^')
     
-    ax.legend(['reference', 'strain', '1 ' + r'${\sigma}$','EBSD strain'], 2, fontsize = 16)
+    ax.legend(['reference', 'strain y = 0.5751x, Adj R-squared = 0.9886', '1 ' + r'${\sigma}$','EBSD strain'], 2, fontsize = 16)
     ax.plot(x, minY, 'k--')
     
 def lin_fit(x, y):
@@ -80,7 +81,7 @@ def lin_fit(x, y):
     return p1, f  
     
 def main():
-    data = pandas.read_csv('bulk_den_strain_hot_with_zero.csv', sep = ",", header = 0)
+    data = pandas.read_csv('bulk_den_strain_hot.csv', sep = ",", header = 0)
     #room = pandas.read_csv('bulk_den_strain_rt.csv', sep = ",", header = 0)
 
     data['den_min'] = (((data['AR'] - data['std']) / 1.324021) ** .5) -1
