@@ -46,9 +46,10 @@ def plot_daily_average(data):
         allData.append([index, date, mean, std]) 
         index = index + 1
     allFrame = pandas.DataFrame(allData, columns = ['index', 'date', 'mean', 'std_dev'])
-    ax = allFrame.plot(kind = 'scatter',x = 'index', y = 'mean', yerr = 'std_dev', title = 'Daily Baseline Average')
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Average Aspect Ratio')
+    ax = allFrame.plot(kind = 'scatter',x = 'index', y = 'mean', yerr = 'std_dev')
+    print(allFrame)
+    ax.set_xlabel('Date', fontsize = 20)
+    ax.set_ylabel('Average Aspect Ratio', fontsize = 20)
     dates = [' '] + dates
     ax.set_xticklabels(dates)
     
@@ -159,16 +160,20 @@ def plot_dendrite_vs_bulk_strain(stats):
     ax.legend(['reference', 'min', 'strain', 'max'], 2)
     
 def main():
-    d = pandas.read_csv('RTmeasurements.csv', sep = ",", header = 0)
+    d = pandas.read_csv('BMGMC_dendrite_data_with_locations.csv', sep = ',', header = 0)
     #adds new column of aspect ratios to data frame
     d['aspect_ratio'] = d['long_axis'] / d['short_axis']  
-    #print(d.mean())
-    #print(d.std())
+    plot_daily_average(d)
+    
+    #s = pandas.read_csv('daily_baseline_averages.csv', sep = ',', header = 0)
+    #print(s['mean'].mean())
+    #print(s['std_dev'].std())
+    
     
     #hot_strains = [.4608, .5597, .6553, .7795, .9383]
     #RT_strains = [.1726, .4692, .8182]
-    stats = plot_histograms(d)
-    print(stats)
+    #stats = plot_histograms(d)
+    #print(stats)
     #plot_region_average(stats)
     #add bulk strain column to stats frame
     #stats['bulk_strain'] = [.1726, .4692, .8182]
